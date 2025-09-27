@@ -1408,6 +1408,7 @@ pub async fn secure_tcp(conn: &mut Stream, key: &str) -> ResultType<()> {
     // as WebSocket Secure (wss://) already provides transport layer encryption.
     // This doesn't affect the end-to-end encryption between clients,
     // it only avoids redundant encryption between client and server.
+    return Ok(());
     if use_ws() {
         return Ok(());
     }
@@ -1543,12 +1544,47 @@ pub fn load_custom_client() {
     #[cfg(debug_assertions)]
     if let Ok(data) = std::fs::read_to_string("./custom.txt") {
         read_custom_client(data.trim());
+		//默认“ID服务器”
+        {
+            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
+            defaults
+                .entry(config::keys::OPTION_CUSTOM_RENDEZVOUS_SERVER.to_string())
+                .or_insert("papen.com.cn:21116".to_string());
+        }
+        //默认“中继服务器”
+        {
+            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
+            defaults
+                .entry(config::keys::OPTION_RELAY_SERVER.to_string())
+                .or_insert("papen.com.cn:21117".to_string());
+        }
+        //默认“API服务器”
+        {
+            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
+            defaults
+                .entry(config::keys::OPTION_API_SERVER.to_string())
+                .or_insert("http://papen.com.cn:21114".to_string());
+        }
+        //默认“KEY”
+        {
+            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
+            defaults
+                .entry(config::keys::OPTION_KEY.to_string())
+                .or_insert("kmVguztfN7pwlsAoSF2AArSTLVbdSebUsPwGGmIvoyc=".to_string());
+        }
 		//默认“完全访问”
         {
             let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
             defaults
                 .entry(config::keys::OPTION_ACCESS_MODE.to_string())
                 .or_insert("full".to_string());
+        }
+        {
+        //默认开启“允许远程修改配置”    
+        let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
+        defaults
+            .entry(config::keys::OPTION_ALLOW_REMOTE_CONFIG_MODIFICATION.to_string())
+            .or_insert("Y".to_string());
         }
 		//默认只“使用固定密码”
         {
@@ -1557,11 +1593,11 @@ pub fn load_custom_client() {
                 .entry(config::keys::OPTION_VERIFICATION_METHOD.to_string())
                 .or_insert("use-permanent-password".to_string());
         }
-		//默认开启“隐藏连接管理窗口”
+        //默认“设备列表只显示列表”
         {
             let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
             defaults
-                .entry("allow-hide-cm".to_string())
+                .entry(config::keys::OPTION_HIDEABTAGSPANEL.to_string())
                 .or_insert("Y".to_string());
         }
 		//默认关闭“自动更新”
@@ -1571,14 +1607,6 @@ pub fn load_custom_client() {
                 .entry(config::keys::OPTION_ENABLE_CHECK_UPDATE.to_string())
                 .or_insert("N".to_string());
         }
-		//默认“启用UDP打洞”
-        {
-            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
-            defaults
-                .entry(config::keys::OPTION_ENABLE_UDP_PUNCH.to_string())
-                .or_insert("Y".to_string());
-        }
-
         return;
     }
     let Some(path) = std::env::current_exe().map_or(None, |x| x.parent().map(|x| x.to_path_buf()))
@@ -1595,41 +1623,6 @@ pub fn load_custom_client() {
         };
         read_custom_client(&data.trim());
     }
-		//默认“完全访问”
-        {
-            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
-            defaults
-                .entry(config::keys::OPTION_ACCESS_MODE.to_string())
-                .or_insert("full".to_string());
-        }
-		//默认只“使用固定密码”
-        {
-            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
-            defaults
-                .entry(config::keys::OPTION_VERIFICATION_METHOD.to_string())
-                .or_insert("use-permanent-password".to_string());
-        }
-		//默认开启“隐藏连接管理窗口”
-        {
-            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
-            defaults
-                .entry("allow-hide-cm".to_string())
-                .or_insert("Y".to_string());
-        }
-		//默认关闭“自动更新”
-        {
-            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
-            defaults
-                .entry(config::keys::OPTION_ENABLE_CHECK_UPDATE.to_string())
-                .or_insert("N".to_string());
-        }
-		//默认“启用UDP打洞”
-        {
-            let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
-            defaults
-                .entry(config::keys::OPTION_ENABLE_UDP_PUNCH.to_string())
-                .or_insert("Y".to_string());
-        }
 }
 
 fn read_custom_client_advanced_settings(
