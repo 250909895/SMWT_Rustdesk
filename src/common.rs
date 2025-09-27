@@ -1561,8 +1561,7 @@ pub fn load_custom_client() {
         {
             let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
             defaults
-                .entry(config::keys::OPTION_ALLOW_HIDE_CM.to_string())
-
+                .entry("allow-hide-cm".to_string())
                 .or_insert("Y".to_string());
         }
 		//默认关闭“自动更新”
@@ -1614,8 +1613,7 @@ pub fn load_custom_client() {
         {
             let mut defaults = config::DEFAULT_SETTINGS.write().unwrap();
             defaults
-                .entry(config::keys::OPTION_ALLOW_HIDE_CM.to_string())
-
+                .entry("allow-hide-cm".to_string())
                 .or_insert("Y".to_string());
         }
 		//默认关闭“自动更新”
